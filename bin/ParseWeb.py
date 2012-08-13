@@ -7,20 +7,34 @@ import datetime
 import time
 
 configFile='c:/aftab/python/crawler/config/crawler.cfg'
-execfile('c:/aftab/python/crawler/config/crawler.cfg')
+execfile(configFile)
 print crawlerData
 
-def read_input_file(inputFile_P):
-    inputDict={}
-    fp=open(inputFile_P)
-    for i,st in enumerate(fp):
-        print i
-        print st
+inputDict={}
+
 
 #Read input from crawlerData loop for every stock and innner loop for every date. Also download history.
 
+def read_input_file(inputFile_P):
+    fp=open(inputFile_P)
+
+    for line in fp:
+        lExpDt=[]
+        for i,st in enumerate(line.split()):
+            if i == 0:
+                lStockSym=st
+            else:
+                lExpDt.append(st)
+
+        inputDict[lStockSym]=lExpDt  
+    
+    fp.close()
+#    print inputDict
+
+
+
 stockSymbol='SHLD'
-expDt='2012-09'
+expDt='2012-08'
 
 def parse_yahoo_option_url(stockSym_P, expdt_P,outputFilePath_P):
 
@@ -43,8 +57,15 @@ def parse_yahoo_option_url(stockSym_P, expdt_P,outputFilePath_P):
 
     f.close()
 
-
-parse_yahoo_option_url( stockSymbol, expDt,   crawlerData)
+##Main program begin from here##
+################################
+read_input_file(crawlerData + '/in/stock.txt')
+for key in inputDict.keys():
+    for dt in inputDict[key]:
+        parse_yahoo_option_url( key, dt,   crawlerData)
+        
+#parse_yahoo_option_url( stockSymbol, expDt,   crawlerData)
+    
     
 
 

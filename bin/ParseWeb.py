@@ -49,10 +49,7 @@ def parse_yahoo_option_url(stockSym_P, expdt_P,outputFilePath_P):
     for tablink in soup.findAll("td", {'class':re.compile("yfnc"),'nowrap':"nowrap" }):
         row=''
         for tt in tablink.parent.findAll("td"):
-            print tt.text
             row = row  + '|' + tt.text.replace(',','')
-        print "------"
-        print row
         f.write(row + "\n")
 
     f.close()

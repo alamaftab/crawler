@@ -46,10 +46,14 @@ def parse_yahoo_option_url(stockSym_P, expdt_P,outputFilePath_P):
     fileSuffix = datetime.datetime.today().strftime('%Y%m%d%H%M%S')
     outputFile=outputFilePath_P + "/out/" + stockSym_P  + "_" + expdt_P +  "_"  + fileSuffix  + ".txt"
     f = open(outputFile, 'w')
+#   git stock ticker price
+    stkTickerPrice = soup.findAll("span", {'class':re.compile("time_rtq_ticker") })[0].findAll("span")[0].text
+#   Logic for reading option price
     for tablink in soup.findAll("td", {'class':re.compile("yfnc"),'nowrap':"nowrap" }):
         row=''
         for tt in tablink.parent.findAll("td"):
             row = row  + '|' + tt.text.replace(',','')
+        row = stkTickerPrice + '|' + row
         f.write(row + "\n")
 
     f.close()

@@ -5,7 +5,6 @@ import re,  __builtin__
 import urllib2
 import datetime
 import time
-import os
 
 configFile='c:/aftab/python/crawler/config/crawler.cfg'
 execfile(configFile)
@@ -81,14 +80,10 @@ def parse_yahoo_history_url(stockSym_P,outputFilePath_P):
 
     soup = BeautifulSoup(html)
 
-    HistOutputFile=outputFilePath_P + "/out/" + stockSym_P + "/" + "HIST/" + stockSym_P   + "_" + "Hist.txt"
-    HistModifiedTime = datetime.datetime.fromtimestamp(os.path.getmtime( HistOutputFile))
-    
-
     fileSuffix = datetime.datetime.today().strftime('%Y%m%d%H%M%S')
     outputFile=outputFilePath_P + "/out/" + stockSym_P + "/" + "HIST/" + stockSym_P   + "_" + "Hist" +  "_"  + fileSuffix  + ".txt"
     f = open(outputFile, 'w')
-     
+    
     for tablink in soup.findAll("td", {'class':re.compile("yfnc"),'nowrap':"nowrap" }):
         row=''
         for tt in tablink.parent.findAll("td"):
@@ -97,27 +92,17 @@ def parse_yahoo_history_url(stockSym_P,outputFilePath_P):
                 kk= time.strptime(tt.text.replace(',',''), "%b %d %Y")
                 tt_str=__builtin__.str(kk.tm_year*10000 + kk.tm_mon*100 + kk.tm_mday)
 
-                histRecordDate = datetime.datetime.strptime(tt_str, '%Y%m%d')                
-
             row = row  + '|' + tt_str
+            
+        f.write(row + "\n")
+#       print row
 
-        if histRecordDate > HistModifiedTime + datetime.timedelta(days=-1):
-            f.write(row + "\n")
-    #print row
-
-    f.close()
-
-    tmpbackup = outputFilePath_P + "/out/" + stockSym_P + "/HIST/backup.txt"   
-    runCmd = 'cp ' +  HistOutputFile  + ' '  + tmpbackup
-    os.system(runCmd )
-    os.system('cat ' + outputFile + ' ' +  tmpbackup  + ' > ' + HistOutputFile ) 
-
-        
+    f.close()   
     
 
 #### End of function ########
 
-#parse_yahoo_history_url('GRPN',crawlerData)
+
 
                                                        
                                       
